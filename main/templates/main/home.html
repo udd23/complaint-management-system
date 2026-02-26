@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusCare · Parul University · Centered Popup</title>
+  <meta name="description" content="Dual authentication for students & authorities with centered modal popup." />
+  <!-- Google Fonts + Font Awesome 6 -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --bg: hsl(150, 30%, 6%);
+      --fg: hsl(150, 10%, 95%);
+      --card: hsl(150, 25%, 10%);
+      --primary-red: #E63946;
+      --red-light: #ff5c6c;
+      --red-dark: #b71c1c;
+      --muted: hsl(150, 10%, 60%);
+      --border: hsl(150, 15%, 18%);
+      --cream: hsl(40, 30%, 96%);
+      --cream-fg: hsl(150, 30%, 12%);
+      --hero-top: hsl(153, 50%, 6%);
+      --hero-mid: hsl(153, 40%, 10%);
+      --hero-bot: hsl(153, 35%, 14%);
+      --radius: 0.75rem;
+      --font-body: 'DM Sans', sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+    }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
+    a { text-decoration: none; color: inherit; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .text-center { text-align: center; }
+
+    /* ===== RED THEME UTILITIES ===== */
+    .text-red { color: var(--primary-red); }
+    .bg-red { background: var(--primary-red); }
+    .glow-red { box-shadow: 0 0 40px rgba(230,57,70,0.3), 0 0 80px rgba(230,57,70,0.1); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.75rem 2rem; border-radius: 60px; font-weight: 600;
+      font-size: 1rem; border: 2px solid transparent; transition: 0.2s; cursor: pointer;
+    }
+    .btn-primary-red { background: var(--primary-red); color: white; }
+    .btn-primary-red:hover { background: #c02f3b; transform: scale(1.02); }
+    .btn-outline-red {
+      background: transparent; border-color: var(--primary-red); color: var(--primary-red);
+    }
+    .btn-outline-red:hover { background: rgba(230,57,70,0.1); }
+    .btn-full { width: 100%; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background: hsla(150,30%,6%,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); height: 70px;
+    }
+    .navbar .container { display: flex; align-items: center; justify-content: space-between; height: 100%; }
+    .navbar-brand { display: flex; align-items: center; gap: 0.5rem; }
+    .navbar-logo {
+      width: 36px; height: 36px; border-radius: 10px; background: var(--primary-red);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 1rem;
+    }
+    .navbar-name { font-weight: 700; font-size: 1.3rem; background: linear-gradient(145deg, #fff, #E63946); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .navbar-links { display: flex; align-items: center; gap: 2rem; }
+    .navbar-links a { color: var(--muted); font-weight: 500; transition: color 0.2s; }
+    .navbar-links a:hover { color: var(--primary-red); }
+    .navbar-toggle { display: none; background: none; border: none; color: white; font-size: 2rem; }
+    .navbar-mobile { display: none; }
+    @media (max-width: 768px) {
+      .navbar-links { display: none; }
+      .navbar-toggle { display: block; }
+      .navbar-mobile.open {
+        display: flex; flex-direction: column; gap: 1rem; background: var(--bg);
+        border-bottom: 1px solid var(--border); padding: 1.5rem; position: absolute; top: 70px; left: 0; right: 0;
+      }
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: radial-gradient(circle at 30% 30%, #1e3a2a, var(--hero-top) 80%);
+      padding: 8rem 1.5rem 4rem; overflow: hidden;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; }
+    .hero h1 { font-size: 3.2rem; font-weight: 700; line-height: 1.2; }
+    .hero-highlight { color: var(--primary-red); text-decoration: underline wavy var(--primary-red) 2px; }
+    .hero p { color: var(--muted); font-size: 1.2rem; max-width: 500px; margin: 1.5rem 0; }
+
+    /* animated phone illustration */
+    .hero-image { display: flex; justify-content: center; perspective: 800px; }
+    .phone-3d {
+      width: 300px; height: 380px; background: linear-gradient(145deg, #1d3023, #0e1f14);
+      border-radius: 50px; border: 3px solid var(--primary-red); transform: rotateY(5deg) rotateX(5deg);
+      box-shadow: 20px 25px 40px rgba(0,0,0,0.7), 0 0 0 2px #2d4531 inset;
+      position: relative; overflow: hidden; animation: phoneSpin 6s infinite ease-in-out;
+    }
+    @keyframes phoneSpin {
+      0% { transform: rotateY(5deg) rotateX(5deg) translateY(0); }
+      50% { transform: rotateY(7deg) rotateX(7deg) translateY(-12px); }
+      100% { transform: rotateY(5deg) rotateX(5deg) translateY(0); }
+    }
+    .phone-screen {
+      margin: 18px 12px; background: #09100c; border-radius: 36px; height: 86%; padding: 20px 12px;
+      border: 1px solid #3d5e49; display: flex; flex-direction: column; gap: 16px;
+    }
+    .notification {
+      background: #17251e; border-radius: 30px; padding: 12px 18px; display: flex; align-items: center;
+      gap: 12px; border-left: 6px solid var(--primary-red); animation: notifSlide 3s infinite;
+      box-shadow: 0 4px 10px rgba(230,57,70,0.2);
+    }
+    .notification:nth-child(2) { animation-delay: 0.5s; border-left-color: #ff8a8a; }
+    .notification:nth-child(3) { animation-delay: 1s; }
+    .notification:nth-child(4) { animation-delay: 1.5s; }
+    @keyframes notifSlide {
+      0% { opacity: 0.4; transform: translateX(-6px); }
+      50% { opacity: 1; transform: translateX(6px); background: #1f3329; }
+      100% { opacity: 0.4; transform: translateX(-6px); }
+    }
+    .notif-icon { width: 30px; height: 30px; background: var(--primary-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+    .notif-text { flex: 1; height: 10px; background: #2d4938; border-radius: 20px; position: relative; overflow: hidden; }
+    .notif-text::after { content: ''; position: absolute; top: 0; left: 0; height: 100%; width: 40%; background: var(--primary-red); border-radius: 20px; animation: loading 2.2s infinite; }
+    @keyframes loading { 0% { left: 0; width: 10%; } 50% { left: 30%; width: 60%; } 100% { left: 90%; width: 10%; } }
+    .hero-trust { margin-top: 3rem; text-align: center; }
+    .hero-trust .stat { font-size: 2rem; font-weight: 700; color: var(--primary-red); }
+
+    /* ===== CENTERED MODAL POPUP (replaces side panel) ===== */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      z-index: 1000; display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-container {
+      width: 460px; max-width: 94vw; background: #11231b; border-radius: 2.5rem;
+      border: 3px solid var(--primary-red); box-shadow: 0 30px 60px rgba(230,57,70,0.4);
+      padding: 2.2rem 2rem; position: relative; animation: modalPop 0.3s ease-out;
+    }
+    @keyframes modalPop {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .modal-close {
+      position: absolute; top: 1.2rem; right: 1.5rem; background: none; border: none;
+      color: var(--muted); font-size: 2.2rem; cursor: pointer; line-height: 1;
+    }
+    .modal-close:hover { color: var(--primary-red); }
+    .modal-header { text-align: center; margin-bottom: 1.5rem; }
+    .modal-header h2 { font-size: 2.2rem; color: var(--primary-red); }
+    .modal-tabs {
+      display: flex; gap: 1rem; margin-bottom: 2rem; background: #0a1912;
+      border-radius: 60px; padding: 0.5rem;
+    }
+    .modal-tab {
+      flex: 1; padding: 0.8rem 0; text-align: center; border-radius: 60px; font-weight: 600;
+      background: transparent; color: #9abbaa; cursor: pointer; border: none; transition: 0.2s;
+    }
+    .modal-tab.active {
+      background: var(--primary-red); color: white; box-shadow: 0 0 15px #E63946;
+    }
+    .modal-form { display: flex; flex-direction: column; gap: 1.2rem; margin: 1.8rem 0; }
+    .modal-form input {
+      padding: 1rem 1.2rem; border-radius: 60px; border: 1px solid #2f4a3a; background: #0e1d15;
+      color: white; font-size: 1rem; outline: none;
+    }
+    .modal-form input:focus { border-color: var(--primary-red); }
+    .modal-form button { margin-top: 0.5rem; }
+    .modal-switch { color: var(--muted); text-align: center; }
+    .modal-switch span { color: var(--primary-red); font-weight: 600; cursor: pointer; }
+
+    /* ===== AUTH CARD SECTION ===== */
+    .auth-section {
+      background: linear-gradient(145deg, #102115, #09120e);
+      padding: 5rem 1.5rem;
+    }
+    .auth-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;
+    }
+    .auth-card {
+      background: rgba(20, 40, 30, 0.7); backdrop-filter: blur(12px);
+      border: 2px solid rgba(230,57,70,0.3); border-radius: 2rem;
+      padding: 2.5rem 2rem; transition: 0.3s; box-shadow: 0 20px 30px -10px rgba(230,57,70,0.2);
+      position: relative; overflow: hidden;
+    }
+    .auth-card:hover { border-color: var(--primary-red); transform: translateY(-8px); }
+    .auth-card::before {
+      content: ''; position: absolute; top: -20%; left: -10%; width: 200px; height: 200px;
+      background: radial-gradient(circle, #E6394620, transparent 70%); border-radius: 50%;
+      animation: orb 8s infinite;
+    }
+    @keyframes orb { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,20px) scale(1.2); } 100% { transform: translate(0,0) scale(1); } }
+    .auth-icon {
+      font-size: 3.5rem; color: var(--primary-red); background: #1e2f27; width: 90px; height: 90px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;
+      border: 2px solid var(--primary-red); box-shadow: 0 0 30px #E63946;
+    }
+    .auth-card h3 { font-size: 2rem; margin-bottom: 1rem; }
+    .auth-card p { color: var(--muted); margin-bottom: 2rem; }
+    .auth-badge {
+      background: var(--primary-red); color: white; padding: 0.3rem 1rem; border-radius: 60px;
+      font-size: 0.9rem; font-weight: 600; display: inline-block; margin-bottom: 1.5rem;
+    }
+    .auth-form { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+    .auth-form input {
+      padding: 1rem 1.2rem; border-radius: 60px; border: 1px solid #2f4a3a; background: #0d1a13;
+      color: white; font-size: 1rem; outline: none; transition: 0.2s;
+    }
+    .auth-form input:focus { border-color: var(--primary-red); box-shadow: 0 0 15px #E63946; }
+    .auth-form button { margin-top: 0.5rem; }
+
+    /* ===== FEATURE SECTION ===== */
+    .features {
+      background: linear-gradient(145deg, #0f1f16, #1a2d21);
+      padding: 5rem 1.5rem;
+      color: white;
+    }
+    .features h2 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(145deg, #fff, #ffb3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+    .features .subtitle {
+      font-size: 1.4rem;
+      color: #bdd6cb;
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      font-weight: 400;
+      border-bottom: 2px dashed var(--primary-red);
+      padding-bottom: 1rem;
+      display: inline-block;
+    }
+    .features-grid { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; }
+    .feature-tabs { display: flex; flex-direction: column; gap: 0.5rem; }
+    .feature-tab {
+      text-align: left; padding: 1rem 1.2rem; border-radius: 1rem; border: none;
+      background: transparent; font-weight: 600; color: #a2c0b2; transition: 0.2s;
+      border-left: 5px solid transparent; cursor: pointer; font-size: 1.05rem;
+    }
+    .feature-tab:hover { background: #253b30; color: white; }
+    .feature-tab.active {
+      color: white; background: rgba(230,57,70,0.25);
+      border-left-color: var(--primary-red);
+    }
+    .feature-tab i { margin-right: 1rem; width: 24px; font-size: 1.2rem; color: var(--primary-red); }
+    .feature-content {
+      background: var(--card); border-radius: 2rem; padding: 3rem; text-align: center;
+      border: 1px solid #3e5f4b; box-shadow: 0 25px 35px -12px black;
+    }
+    .feature-content .icon { font-size: 4rem; color: var(--primary-red); margin-bottom: 1.5rem; }
+    .feature-content h3 { font-size: 2rem; margin-bottom: 1rem; color: white; }
+    .feature-content p { color: #bed9cb; font-size: 1.1rem; }
+
+    /* ===== WHY CARDS ===== */
+    .why { padding: 5rem 1.5rem; background: var(--bg); }
+    .why h2 { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; }
+    .why-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; }
+    .why-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 1.5rem;
+      padding: 2rem 1.5rem; transition: 0.3s; backdrop-filter: blur(8px);
+    }
+    .why-card:hover { border-color: var(--primary-red); transform: scale(1.02); }
+    .why-icon { font-size: 2.5rem; color: var(--primary-red); margin-bottom: 1rem; }
+    .why-card h3 { color: var(--primary-red); margin-bottom: 0.5rem; }
+    .why-card p { color: var(--muted); }
+
+    /* ===== CTA ===== */
+    .cta {
+      background: linear-gradient(145deg, #1b2b21, #0c1a12);
+      padding: 5rem 1.5rem; text-align: center;
+    }
+    .cta h2 { font-size: 2.5rem; color: var(--primary-red); }
+
+    /* ===== FOOTER ===== */
+    .footer { background: var(--bg); border-top: 1px solid var(--border); padding: 2rem 1.5rem; }
+    .footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { background: var(--primary-red); width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; }
+    .footer-links a { color: var(--muted); margin-left: 2rem; }
+    .footer-links a:hover { color: var(--primary-red); }
+
+    @media (max-width: 900px) { .auth-grid { grid-template-columns: 1fr; } .features-grid { grid-template-columns: 1fr; } .why-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .why-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="#" class="navbar-brand">
+        <div class="navbar-logo"><i class="fas fa-graduation-cap"></i></div>
+        <span class="navbar-name">CampusCare · PU</span>
+      </a>
+      <div class="navbar-links">
+        <a href="#features">Features</a>
+        <a href="#why">Why PU</a>
+        <a href="#" onclick="openModal('student'); return false;">Student login</a>
+        <a href="#" onclick="openModal('authority'); return false;">Authority login</a>
+        <a href="#" class="btn btn-primary-red" style="padding:0.5rem 1.5rem;">Get app</a>
+      </div>
+      <button class="navbar-toggle" onclick="document.getElementById('mobile-menu').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+    </div>
+    <div id="mobile-menu" class="navbar-mobile">
+      <a href="#features">Features</a>
+      <a href="#why">Why PU</a>
+      <a href="#" onclick="openModal('student'); return false;">Student login</a>
+      <a href="#" onclick="openModal('authority'); return false;">Authority login</a>
+      <a href="#" class="btn btn-primary-red btn-full">Get app</a>
+    </div>
+  </nav>
+
+  <!-- HERO with modal triggers -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <span class="pu-badge" style="background:var(--primary-red); padding:0.3rem 1.2rem; border-radius:60px; color:white; font-weight:600;">🎓 Parul University exclusive</span>
+          <h1>Complaints meet <span class="hero-highlight">red carpet</span> resolution</h1>
+          <p>Separate portals for students & authorities. Real‑time tracking, auto‑escalation, and full transparency.</p>
+          <div class="hero-buttons" style="display:flex; gap:1rem;">
+            <a href="#" onclick="openModal('student'); return false;" class="btn btn-primary-red"><i class="fas fa-user-graduate"></i> Student access</a>
+            <a href="#" onclick="openModal('authority'); return false;" class="btn btn-outline-red"><i class="fas fa-user-tie"></i> Authority login</a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div class="phone-3d">
+            <div class="phone-screen">
+              <div class="notification"><div class="notif-icon"><i class="fas fa-bolt"></i></div><div class="notif-text"></div></div>
+              <div class="notification"><div class="notif-icon"><i class="fas fa-wifi"></i></div><div class="notif-text"></div></div>
+              <div class="notification"><div class="notif-icon"><i class="fas fa-broom"></i></div><div class="notif-text"></div></div>
+              <div class="notification"><div class="notif-icon"><i class="fas fa-shield"></i></div><div class="notif-text"></div></div>
+              <div style="margin-top: auto; background: #E63946; color: white; padding: 8px; border-radius: 30px; text-align: center; font-size: 0.8rem;">4 active complaints</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-trust">
+        <p class="stat"><i class="fas fa-users" style="color:#E63946;"></i> 3,200+ students · 120+ authorities</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CENTERED MODAL (login/signup popup) -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal-container" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div class="modal-header">
+        <h2 id="modalTitle">Student Portal</h2>
+      </div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="modalLoginTab" onclick="switchModalTab('login')">Login</button>
+        <button class="modal-tab" id="modalSignupTab" onclick="switchModalTab('signup')">Sign Up</button>
+      </div>
+      <div id="modalFormContainer"></div>
+      <div class="modal-switch" id="modalSwitch">
+        <span id="modalSwitchLink" onclick="switchModalTab('signup')">Create new account</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH CARD SECTION (Student + Authority) -->
+  <section class="auth-section" id="auth">
+    <div class="container">
+      <h2 class="text-center" style="font-size: 2.8rem; margin-bottom: 1rem;">Two worlds, <span class="text-red">one platform</span></h2>
+      <p class="text-center" style="color: var(--muted); max-width: 700px; margin: 0 auto 3rem;">Students raise issues, authorities resolve. Separate logins, shared accountability.</p>
+      <div class="auth-grid">
+        <!-- Student card -->
+        <div class="auth-card">
+          <div class="auth-icon"><i class="fas fa-user-graduate"></i></div>
+          <span class="auth-badge">🎓 STUDENT PORTAL</span>
+          <h3>Raise · track · escalate</h3>
+          <p>Hostel, classroom, canteen – lodge complaints in seconds. Get real‑time updates & SMS alerts.</p>
+          <div class="auth-form">
+            <input type="text" placeholder="Enrollment number (e.g. 210101)" />
+            <input type="password" placeholder="PU webmail password" />
+            <button class="btn btn-primary-red" onclick="openModal('student'); return false;">Login as student <i class="fas fa-arrow-right"></i></button>
+          </div>
+          <p style="margin-top: 1.2rem; font-size:0.9rem;"><i class="fas fa-shield-alt" style="color:#E63946;"></i> Secure SSO · Forgot password?</p>
+        </div>
+        <!-- Authority card -->
+        <div class="auth-card">
+          <div class="auth-icon"><i class="fas fa-user-tie"></i></div>
+          <span class="auth-badge">📋 AUTHORITY PORTAL</span>
+          <h3>Manage · assign · resolve</h3>
+          <p>Wardens, faculty, maintenance – see all complaints, assign tasks, track resolution SLAs.</p>
+          <div class="auth-form">
+            <input type="text" placeholder="Staff ID (e.g. PU/STAFF/123)" />
+            <input type="password" placeholder="Official password" />
+            <button class="btn btn-primary-red" onclick="openModal('authority'); return false;">Login as authority <i class="fas fa-arrow-right"></i></button>
+          </div>
+          <p style="margin-top: 1.2rem; font-size:0.9rem;"><i class="fas fa-chart-line" style="color:#E63946;"></i> Department dashboard · Analytics</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2 class="text-center">⚡ Instant impact, zero bureaucracy</h2>
+      <p class="text-center subtitle">From hostel Wi‑Fi to library lights — every voice finds a direct path.</p>
+      <div class="features-grid">
+        <div class="feature-tabs">
+          <button class="feature-tab active" onclick="setFeature(0, this)"><i class="fas fa-inbox"></i> Unified inbox</button>
+          <button class="feature-tab" onclick="setFeature(1, this)"><i class="fas fa-building"></i> Hostel‑wise tracking</button>
+          <button class="feature-tab" onclick="setFeature(2, this)"><i class="fas fa-robot"></i> Auto‑forward</button>
+          <button class="feature-tab" onclick="setFeature(3, this)"><i class="fas fa-chart-pie"></i> SLA reports</button>
+          <button class="feature-tab" onclick="setFeature(4, this)"><i class="fas fa-language"></i> भाषा समर्थन</button>
+        </div>
+        <div class="feature-content" id="feature-content">
+          <div>
+            <div class="icon" id="feature-icon"><i class="fas fa-inbox"></i></div>
+            <h3 id="feature-title">One place for all complaints</h3>
+            <p id="feature-desc">Emails, texts, DMs, or calls—every student complaint lands in CampusCare's workspace, organised and ready to be solved.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE -->
+  <section class="why" id="why">
+    <div class="container">
+      <h2>Why PU students & authorities <i class="fas fa-heart" style="color:#E63946;"></i> CampusCare</h2>
+      <div class="why-grid">
+        <div class="why-card"><div class="why-icon"><i class="fas fa-bolt"></i></div><h3>Real‑time sync</h3><p>Student raises → authority gets push notification.</p></div>
+        <div class="why-card"><div class="why-icon"><i class="fas fa-history"></i></div><h3>Full history</h3><p>Every complaint logged, never lost.</p></div>
+        <div class="why-card"><div class="why-icon"><i class="fas fa-shield-alt"></i></div><h3>Role‑based access</h3><p>Students see own, authorities see all.</p></div>
+        <div class="why-card"><div class="why-icon"><i class="fas fa-clock"></i></div><h3>SLA monitor</h3><p>Red alerts if resolution delayed.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <h2>One campus. Two logins. Zero pending complaints.</h2>
+      <p style="margin:2rem 0;">Download the free app or use web portal.</p>
+      <div style="display:flex; gap:1rem; justify-content:center;">
+        <a href="#" class="btn btn-primary-red"><i class="fab fa-google-play"></i> Google Play</a>
+        <a href="#" class="btn btn-outline-red"><i class="fas fa-globe"></i> Web version</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div style="display:flex; align-items:center; gap:0.8rem;">
+        <div class="footer-logo"><i class="fas fa-graduation-cap"></i></div>
+        <span style="font-weight:600;">CampusCare · Parul Edition</span>
+      </div>
+      <div class="footer-links">
+        <a href="#">Student privacy</a>
+        <a href="#">Authority terms</a>
+        <a href="#auth">Portals</a>
+      </div>
+      <p>© 2026 · Free for PU community</p>
+    </div>
+  </footer>
+
+  <script>
+    let currentRole = 'student';
+    let currentModalTab = 'login';
+
+    function openModal(role) {
+      currentRole = role;
+      document.getElementById('modalOverlay').classList.add('active');
+      document.getElementById('modalTitle').innerText = role === 'student' ? 'Student Portal' : 'Authority Portal';
+      currentModalTab = 'login';
+      document.getElementById('modalLoginTab').classList.add('active');
+      document.getElementById('modalSignupTab').classList.remove('active');
+      renderModalForm();
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function switchModalTab(tab) {
+      currentModalTab = tab;
+      if (tab === 'login') {
+        document.getElementById('modalLoginTab').classList.add('active');
+        document.getElementById('modalSignupTab').classList.remove('active');
+      } else {
+        document.getElementById('modalSignupTab').classList.add('active');
+        document.getElementById('modalLoginTab').classList.remove('active');
+      }
+      renderModalForm();
+    }
+
+    function renderModalForm() {
+      const container = document.getElementById('modalFormContainer');
+      const roleLabel = currentRole === 'student' ? 'Enrollment / Email' : 'Staff ID / Email';
+      const isLogin = currentModalTab === 'login';
+      let html = `<div class="modal-form">`;
+      if (isLogin) {
+        html += `
+          <input type="text" placeholder="${roleLabel}" />
+          <input type="password" placeholder="Password" />
+          <button class="btn btn-primary-red">Login ${currentRole === 'student' ? 'as Student' : 'as Authority'}</button>
+        `;
+      } else {
+        html += `
+          <input type="text" placeholder="Full Name" />
+          <input type="email" placeholder="Email / ${currentRole === 'student' ? 'Enrollment' : 'Staff ID'}" />
+          <input type="password" placeholder="Password" />
+          <input type="password" placeholder="Confirm Password" />
+          <button class="btn btn-primary-red">Sign Up ${currentRole === 'student' ? 'as Student' : 'as Authority'}</button>
+        `;
+      }
+      html += `</div>`;
+      container.innerHTML = html;
+      const switchSpan = document.getElementById('modalSwitchLink');
+      if (isLogin) {
+        switchSpan.innerText = 'Create new account';
+        switchSpan.onclick = () => switchModalTab('signup');
+      } else {
+        switchSpan.innerText = 'Already have an account? Login';
+        switchSpan.onclick = () => switchModalTab('login');
+      }
+    }
+
+    const features = [
+      { title: "Unified inbox", desc: "All student complaints (hostel, academic, canteen) in one dashboard. Tag, filter, assign.", icon: '<i class="fas fa-inbox"></i>' },
+      { title: "Hostel‑wise tracking", desc: "Complaints grouped by hostel. Wardens see only their wing; chief warden sees all.", icon: '<i class="fas fa-building"></i>' },
+      { title: "Auto‑forward to caretaker", desc: "If not resolved in 4h, escalates to chief warden & dean.", icon: '<i class="fas fa-robot"></i>' },
+      { title: "SLA reports", desc: "Authority dashboard shows average resolution time, pending counts, department-wise stats.", icon: '<i class="fas fa-chart-pie"></i>' },
+      { title: "भाषा समर्थन", desc: "Students can write in Hindi, Gujarati, English – authorities get translated version.", icon: '<i class="fas fa-language"></i>' }
+    ];
+    function setFeature(index, btn) {
+      document.querySelectorAll('.feature-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('feature-icon').innerHTML = features[index].icon;
+      document.getElementById('feature-title').textContent = features[index].title;
+      document.getElementById('feature-desc').textContent = features[index].desc;
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>

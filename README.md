@@ -81,3 +81,14 @@ Unlike traditional complaint boxes or informal reporting, CampusCare enforces **
 CampusCare aims to replace informal and ineffective grievance mechanisms with a **structured, auditable, and SLA-driven digital system** that improves campus governance, accountability, and service quality.
 
 > This project is built as a real-world workflow system for learning, portfolio demonstration, and potential pilot deployment in educational institutions.
+
+
+## 👤 Author
+
+**Name:** Uday Sapkale
+**Role:** B.Tech IT Student | Full-Stack (Django) Developer  
+**GitHub:** https://github.com/wbu_ud
+**LinkedIn:** https://www.linkedin.com/in/uday-sapkale/  
+**Email:** udaysapkale109@gmail.com
+
+> Passionate about building real-world workflow systems and scalable web applications.

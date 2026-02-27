@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusCare · Authority Dashboard · Complete Hierarchy</title>
+  <!-- Google Fonts + Font Awesome 6 -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #0f2a1c, #1a3a28);
+      min-height: 100vh;
+      color: white;
+    }
+    
+    /* ===== WELCOME SCREEN ===== */
+    .welcome-screen {
+      text-align: center;
+      animation: fadeInUp 0.8s ease;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .welcome-logo {
+      font-size: 5rem;
+      color: #E63946;
+      margin-bottom: 2rem;
+      animation: pulse 2s infinite;
+    }
+    .welcome-screen h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .welcome-screen p {
+      font-size: 1.2rem;
+      color: #c0d9cc;
+      margin-bottom: 2rem;
+    }
+    .start-btn {
+      background: #E63946;
+      color: white;
+      border: none;
+      padding: 1.2rem 3rem;
+      border-radius: 60px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 10px 25px rgba(230,57,70,0.4);
+    }
+    .start-btn:hover {
+      transform: scale(1.05);
+      background: #c02f3b;
+    }
+    
+    /* ===== ONBOARDING MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    
+    .modal-container {
+      background: #11231b;
+      border-radius: 40px;
+      border: 3px solid #E63946;
+      width: 500px;
+      max-width: 94vw;
+      padding: 2.5rem;
+      position: relative;
+      box-shadow: 0 30px 60px rgba(230,57,70,0.4);
+      animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    @keyframes modalPop {
+      0% { opacity: 0; transform: scale(0.7) translateY(50px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    
+    .modal-progress {
+      height: 8px;
+      background: #2f4a3a;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #E63946;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    
+    .modal-icon {
+      font-size: 3rem;
+      color: #E63946;
+      text-align: center;
+      margin-bottom: 1rem;
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .modal-container h2 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    
+    .modal-subtitle {
+      color: #c0d9cc;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+    
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .form-group label {
+      font-weight: 600;
+      color: #c0d9cc;
+    }
+    
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 1rem 1.2rem;
+      border-radius: 30px;
+      border: 2px solid #2f4a3a;
+      background: #0e1d15;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s;
+      width: 100%;
+    }
+    
+    .form-group input:focus, .form-group select:focus {
+      border-color: #E63946;
+      box-shadow: 0 0 0 4px rgba(230,57,70,0.2);
+    }
+    
+    .option-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+    }
+    
+    .option-btn {
+      padding: 1rem;
+      border: 2px solid #2f4a3a;
+      background: #0e1d15;
+      color: white;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    
+    .option-btn.selected {
+      background: #E63946;
+      border-color: #E63946;
+      box-shadow: 0 0 20px rgba(230,57,70,0.5);
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+    
+    .modal-btn {
+      padding: 0.8rem 2rem;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      border: none;
+    }
+    
+    .btn-next {
+      background: #E63946;
+      color: white;
+    }
+    .btn-next:hover { background: #c02f3b; transform: translateX(5px); }
+    
+    .btn-prev {
+      background: transparent;
+      color: #c0d9cc;
+      border: 2px solid #c0d9cc;
+    }
+    .btn-prev:hover { background: rgba(255,255,255,0.1); transform: translateX(-5px); }
+    
+    /* ===== THANK YOU SCREEN ===== */
+    .thankyou-screen {
+      text-align: center;
+      padding: 2rem;
+    }
+    .thankyou-icon {
+      font-size: 5rem;
+      color: #28a745;
+      margin-bottom: 2rem;
+      animation: checkmark 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    @keyframes checkmark {
+      0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    .thankyou-screen h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .thankyou-screen p {
+      color: #c0d9cc;
+      margin-bottom: 2rem;
+    }
+    .dashboard-btn {
+      background: #E63946;
+      color: white;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .dashboard-btn:hover { transform: scale(1.05); background: #c02f3b; }
+    
+    /* ===== SUMMARY CARD ===== */
+    .summary-card {
+      background: #1a3a28;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #2f4a3a;
+    }
+    .summary-item:last-child { border-bottom: none; }
+    .summary-label { color: #c0d9cc; }
+    .summary-value { font-weight: 600; color: #E63946; }
+    
+    /* ===== DASHBOARD STYLES ===== */
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+      background: #f0f7f3;
+      color: #1e2a24;
+      display: none;
+    }
+    
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #0f2a1c, #1a3a28);
+      color: white;
+      padding: 2rem 1.5rem;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #2f4a3a;
+    }
+    .sidebar-logo i {
+      background: #E63946;
+      padding: 0.6rem;
+      border-radius: 12px;
+    }
+    .role-badge {
+      background: rgba(230,57,70,0.2);
+      color: #E63946;
+      padding: 0.8rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      border: 1px solid #E63946;
+    }
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      border-radius: 12px;
+      color: #c0d9cc;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    .sidebar-item:hover {
+      background: rgba(230,57,70,0.15);
+      color: white;
+    }
+    .sidebar-item.active {
+      background: #E63946;
+      color: white;
+      box-shadow: 0 8px 15px rgba(230,57,70,0.3);
+    }
+    .sidebar-item i { width: 24px; font-size: 1.2rem; }
+    .badge {
+      background: #E63946;
+      color: white;
+      padding: 0.2rem 0.6rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      margin-left: auto;
+    }
+    
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background: white;
+      padding: 1rem 2rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .authority-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .authority-avatar {
+      width: 50px;
+      height: 50px;
+      background: #E63946;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+    .authority-details h3 { font-size: 1.1rem; color: #555; }
+    .authority-details p { color: #888; font-size: 0.9rem; }
+    .role-tag {
+      background: #E63946;
+      color: white;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 1rem;
+    }
+    .logout-btn {
+      background: none;
+      border: 2px solid #E63946;
+      color: #E63946;
+      padding: 0.6rem 1.5rem;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .logout-btn:hover {
+      background: #E63946;
+      color: white;
+    }
+    
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .kpi-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: 0.3s;
+    }
+    .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(230,57,70,0.15); }
+    .kpi-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(230,57,70,0.1);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #E63946;
+      font-size: 2rem;
+    }
+    .kpi-info h3 { font-size: 1.8rem; color: #1e2a24; }
+    .kpi-info p { color: #666; font-size: 0.9rem; }
+    .warning-text { color: #dc3545; font-weight: 600; }
+    
+    /* Real-time Notification Bar */
+    .live-notification {
+      background: linear-gradient(135deg, #E63946, #ff8a8a);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      animation: pulse 2s infinite;
+    }
+    .live-notification i {
+      font-size: 1.5rem;
+    }
+    
+    /* Filter Bar */
+    .filter-bar {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f5f8f6;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+    }
+    .filter-group i { color: #E63946; }
+    .filter-group select, .filter-group input {
+      border: none;
+      background: transparent;
+      padding: 0.5rem;
+      outline: none;
+      font-size: 0.9rem;
+      min-width: 120px;
+    }
+    .search-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f5f8f6;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+    }
+    .search-box input {
+      border: none;
+      background: transparent;
+      padding: 0.5rem;
+      outline: none;
+      width: 100%;
+    }
+    
+    /* Complaints Table */
+    .complaints-section {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .section-header h2 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #1e2a24;
+    }
+    .section-header h2 i { color: #E63946; }
+    .refresh-btn {
+      background: none;
+      border: 1px solid #e0e8e3;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .refresh-btn:hover { background: #E63946; color: white; }
+    
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      text-align: left;
+      padding: 1rem;
+      background: #f5f8f6;
+      color: #555;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #e0e8e3;
+    }
+    tr:hover td { background: #f9fcfb; }
+    .priority-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .priority-high { background: #f8d7da; color: #721c24; }
+    .priority-medium { background: #fff3cd; color: #856404; }
+    .priority-low { background: #d4edda; color: #155724; }
+    .status-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .status-open { background: #f8d7da; color: #721c24; }
+    .status-progress { background: #cce5ff; color: #004085; }
+    .status-resolved { background: #d4edda; color: #155724; }
+    .status-escalated { background: #fff3cd; color: #856404; }
+    .sla-warning { color: #dc3545; font-weight: 600; }
+    .sla-normal { color: #28a745; }
+    .forward-chain {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 0.3rem;
+    }
+    .forward-chain i { color: #E63946; margin: 0 0.2rem; }
+    .action-btn {
+      background: none;
+      border: 1px solid #e0e8e3;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      cursor: pointer;
+      margin: 0 0.2rem;
+      transition: 0.3s;
+    }
+    .action-btn:hover { background: #E63946; color: white; border-color: #E63946; }
+    
+    /* Complaint Detail Modal */
+    .complaint-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .complaint-modal.active { display: flex; }
+    .modal-container {
+      background: white;
+      border-radius: 30px;
+      width: 900px;
+      max-width: 94vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+      animation: modalPop 0.3s;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #888;
+    }
+    .modal-close:hover { color: #E63946; }
+    .modal-header {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    .complaint-id {
+      background: #E63946;
+      color: white;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+    }
+    .sla-timer {
+      margin-left: auto;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      background: #f8f9fa;
+      font-weight: 600;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    .detail-section {
+      background: #f9fcfb;
+      padding: 1.5rem;
+      border-radius: 20px;
+    }
+    .detail-section h3 {
+      margin-bottom: 1rem;
+      color: #E63946;
+      font-size: 1.1rem;
+    }
+    .detail-item {
+      display: flex;
+      margin-bottom: 0.8rem;
+    }
+    .detail-label {
+      width: 100px;
+      color: #666;
+    }
+    .detail-value {
+      flex: 1;
+      font-weight: 500;
+    }
+    .forward-history {
+      background: #f9fcfb;
+      padding: 1rem;
+      border-radius: 15px;
+      margin: 1rem 0;
+    }
+    .forward-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px dashed #e0e8e3;
+    }
+    .forward-item i { color: #E63946; }
+    .timeline {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: #f9fcfb;
+      border-radius: 20px;
+    }
+    .timeline-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-left: 2px solid #E63946;
+      padding-left: 2rem;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background: #E63946;
+      border-radius: 50%;
+      position: absolute;
+      left: -7px;
+      top: 1.5rem;
+    }
+    .timeline-time {
+      min-width: 100px;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .timeline-content h4 { margin-bottom: 0.3rem; }
+    .timeline-content p { color: #666; font-size: 0.9rem; }
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .action-button {
+      padding: 0.8rem 1.5rem;
+      border-radius: 30px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-progress { background: #007bff; color: white; }
+    .btn-resolve { background: #28a745; color: white; }
+    .btn-forward { background: #ffc107; color: #1e2a24; }
+    .btn-cancel { background: #dc3545; color: white; }
+    .action-button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    
+    /* Notes Section */
+    .notes-section {
+      margin-top: 2rem;
+    }
+    .note-item {
+      background: #f9fcfb;
+      padding: 1rem;
+      border-radius: 15px;
+      margin-bottom: 1rem;
+    }
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .note-author { color: #E63946; font-weight: 600; }
+    .add-note {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .add-note textarea {
+      flex: 1;
+      padding: 1rem;
+      border: 2px solid #e0e8e3;
+      border-radius: 15px;
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
+    .add-note button {
+      padding: 0 2rem;
+      background: #E63946;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    @media (max-width: 1200px) {
+      .kpi-grid { grid-template-columns: repeat(2,1fr); }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; height: auto; position: relative; }
+      .dashboard-container { flex-direction: column; }
+      .filter-bar { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <!-- WELCOME SCREEN -->
+  <div class="welcome-screen" id="welcomeScreen">
+    <div class="welcome-logo">
+      <i class="fas fa-user-tie"></i>
+    </div>
+    <h1>Welcome to CampusCare</h1>
+    <p>Authority Portal · Let's set up your profile</p>
+    <button class="start-btn" onclick="startOnboarding()">
+      <i class="fas fa-arrow-right"></i> Get Started
+    </button>
+  </div>
+
+  <!-- ONBOARDING MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container" id="modalContainer">
+      <div class="modal-progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="modal-icon" id="modalIcon">
+        <i class="fas fa-user-tie"></i>
+      </div>
+      <h2 id="modalTitle">Choose Your Authority Type</h2>
+      <div class="modal-subtitle" id="modalSubtitle">Step 1 of 7 · Select your position</div>
+      
+      <div id="modalContent"></div>
+      
+      <div class="modal-footer">
+        <button class="modal-btn btn-prev" id="prevBtn" onclick="prevStep()">
+          <i class="fas fa-arrow-left"></i> Previous
+        </button>
+        <button class="modal-btn btn-next" id="nextBtn" onclick="nextStep()">
+          Next <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD CONTAINER -->
+  <div class="dashboard-container" id="dashboardContainer">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <i class="fas fa-user-tie"></i>
+        <span>CampusCare · Authority</span>
+      </div>
+      <div class="role-badge" id="roleBadge">
+        <i class="fas fa-user-tie"></i> Loading...
+      </div>
+      <div class="sidebar-menu">
+        <button class="sidebar-item active" onclick="showSection('dashboard', this)">
+          <i class="fas fa-home"></i> Dashboard
+        </button>
+        <button class="sidebar-item" onclick="showSection('complaints', this)">
+          <i class="fas fa-inbox"></i> Complaint Inbox
+          <span class="badge" id="openCount">0</span>
+        </button>
+        <button class="sidebar-item" onclick="showSection('forwarded', this)">
+          <i class="fas fa-forward"></i> Forwarded to Me
+          <span class="badge" id="forwardedCount">0</span>
+        </button>
+        <button class="sidebar-item" onclick="showSection('escalated', this)">
+          <i class="fas fa-exclamation-triangle"></i> Escalated
+          <span class="badge" id="escalatedCount">0</span>
+        </button>
+        <button class="sidebar-item" onclick="showSection('audit', this)">
+          <i class="fas fa-history"></i> Forward History
+        </button>
+        <button class="sidebar-item" onclick="showSection('reports', this)">
+          <i class="fas fa-download"></i> Export Reports
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="authority-info">
+          <div class="authority-avatar">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <div class="authority-details" id="authorityDetails">
+            <h3>Loading...</h3>
+            <p>Loading...</p>
+          </div>
+          <span class="role-tag" id="roleTag">Loading</span>
+        </div>
+        <button class="logout-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+
+      <!-- Real-time Notification (shows when new complaint arrives) -->
+      <div class="live-notification" id="liveNotification" style="display: none;">
+        <i class="fas fa-bell"></i>
+        <span id="notificationMessage">New complaint received!</span>
+      </div>
+
+      <!-- KPI Cards Section -->
+      <div id="dashboardSection">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon"><i class="fas fa-clock"></i></div>
+            <div class="kpi-info">
+              <h3 id="openComplaints">0</h3>
+              <p>Open Complaints</p>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon"><i class="fas fa-spinner"></i></div>
+            <div class="kpi-info">
+              <h3 id="inProgressCount">0</h3>
+              <p>In Progress</p>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon"><i class="fas fa-forward"></i></div>
+            <div class="kpi-info">
+              <h3 id="forwardedToMe">0</h3>
+              <p>Forwarded to Me</p>
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="kpi-info">
+              <h3 class="warning-text" id="escalatedCount2">0</h3>
+              <p>Escalated</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <i class="fas fa-filter"></i>
+            <select id="statusFilter">
+              <option value="all">All Status</option>
+              <option value="open">Open</option>
+              <option value="progress">In Progress</option>
+              <option value="resolved">Resolved</option>
+              <option value="escalated">Escalated</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <i class="fas fa-tag"></i>
+            <select id="categoryFilter">
+              <option value="all">All Categories</option>
+              <option value="hostel">Hostel</option>
+              <option value="academic">Academic</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="canteen">Canteen</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <i class="fas fa-flag"></i>
+            <select id="priorityFilter">
+              <option value="all">All Priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search complaints..." id="searchInput">
+          </div>
+        </div>
+
+        <!-- Complaints Table -->
+        <div class="complaints-section">
+          <div class="section-header">
+            <h2><i class="fas fa-inbox"></i> Complaint Inbox</h2>
+            <button class="refresh-btn" onclick="refreshData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+          </div>
+          <div class="table-responsive">
+            <table id="complaintsTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Student</th>
+                  <th>Category</th>
+                  <th>Location</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Forward Chain</th>
+                  <th>SLA</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="complaintsTableBody">
+                <!-- Will be populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Forwarded to Me Section -->
+      <div id="forwardedSection" style="display: none;">
+        <div class="complaints-section">
+          <div class="section-header">
+            <h2><i class="fas fa-forward" style="color:#ffc107;"></i> Forwarded to Me</h2>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Student</th>
+                  <th>Forwarded By</th>
+                  <th>From Role</th>
+                  <th>Reason</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="forwardedTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Escalated Section -->
+      <div id="escalatedSection" style="display: none;">
+        <div class="complaints-section">
+          <div class="section-header">
+            <h2><i class="fas fa-exclamation-triangle" style="color:#dc3545;"></i> Escalated Complaints</h2>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Student</th>
+                  <th>Escalated By</th>
+                  <th>To</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="escalatedTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Forward History Section -->
+      <div id="auditSection" style="display: none;">
+        <div class="complaints-section">
+          <div class="section-header">
+            <h2><i class="fas fa-history"></i> Complete Forward History</h2>
+          </div>
+          <div class="timeline" id="forwardHistory">
+            <!-- Will be populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Export Reports Section -->
+      <div id="reportsSection" style="display: none;">
+        <div class="complaints-section">
+          <div class="section-header">
+            <h2><i class="fas fa-download"></i> Export Reports</h2>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;">
+            <div class="action-card" style="background:#f9fcfb; padding:2rem; text-align:center; border-radius:20px; cursor:pointer;" onclick="exportReport('csv')">
+              <i class="fas fa-file-csv" style="font-size:3rem; color:#E63946; margin-bottom:1rem;"></i>
+              <h3>CSV Report</h3>
+              <p style="color:#666;">Complete complaint data</p>
+            </div>
+            <div class="action-card" style="background:#f9fcfb; padding:2rem; text-align:center; border-radius:20px; cursor:pointer;" onclick="exportReport('pdf')">
+              <i class="fas fa-file-pdf" style="font-size:3rem; color:#E63946; margin-bottom:1rem;"></i>
+              <h3>PDF Report</h3>
+              <p style="color:#666;">Forward history report</p>
+            </div>
+            <div class="action-card" style="background:#f9fcfb; padding:2rem; text-align:center; border-radius:20px; cursor:pointer;" onclick="exportReport('excel')">
+              <i class="fas fa-file-excel" style="font-size:3rem; color:#E63946; margin-bottom:1rem;"></i>
+              <h3>Excel Report</h3>
+              <p style="color:#666;">Analytics export</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Complaint Detail Modal -->
+  <div class="complaint-modal" id="complaintModal">
+    <div class="modal-container">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      
+      <div class="modal-header">
+        <h2>Complaint Details</h2>
+        <span class="complaint-id" id="modalComplaintId">CMP-001</span>
+        <span class="sla-timer" id="modalSlaTimer">SLA: Calculating...</span>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-section">
+          <h3><i class="fas fa-user"></i> Student Information</h3>
+          <div class="detail-item">
+            <span class="detail-label">Name:</span>
+            <span class="detail-value" id="modalStudentName">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Roll No:</span>
+            <span class="detail-value" id="modalStudentRoll">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Location:</span>
+            <span class="detail-value" id="modalLocation">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Contact:</span>
+            <span class="detail-value" id="modalContact">-</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3><i class="fas fa-info-circle"></i> Complaint Information</h3>
+          <div class="detail-item">
+            <span class="detail-label">Category:</span>
+            <span class="detail-value" id="modalCategory">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Priority:</span>
+            <span class="detail-value" id="modalPriority">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value" id="modalStatus">-</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Created:</span>
+            <span class="detail-value" id="modalCreated">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Forward History Section in Modal -->
+      <div class="forward-history" id="modalForwardHistory">
+        <h3><i class="fas fa-share-alt"></i> Forward Chain</h3>
+        <div id="forwardChain"></div>
+      </div>
+
+      <div class="detail-section">
+        <h3><i class="fas fa-align-left"></i> Description</h3>
+        <p id="modalDescription">-</p>
+      </div>
+
+      <div class="detail-section">
+        <h3><i class="fas fa-paperclip"></i> Attachments</h3>
+        <div id="modalAttachments" style="display:flex; gap:1rem; flex-wrap:wrap;"></div>
+      </div>
+
+      <div class="timeline" id="modalTimeline">
+        <h3><i class="fas fa-history"></i> Status Timeline</h3>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="action-button btn-progress" onclick="updateStatus('progress')">
+          <i class="fas fa-spinner"></i> Mark In Progress
+        </button>
+        <button class="action-button btn-resolve" onclick="showResolveModal()">
+          <i class="fas fa-check"></i> Resolve
+        </button>
+        <button class="action-button btn-forward" onclick="showForwardModal()">
+          <i class="fas fa-forward"></i> Forward
+        </button>
+        <button class="action-button btn-cancel" onclick="showCancelModal()">
+          <i class="fas fa-ban"></i> Cancel
+        </button>
+      </div>
+
+      <!-- Internal Notes -->
+      <div class="notes-section">
+        <h3><i class="fas fa-comments"></i> Internal Notes</h3>
+        <div id="notesList"></div>
+        <div class="add-note">
+          <textarea id="newNote" placeholder="Add an internal note..."></textarea>
+          <button onclick="addNote()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Authority data object
+    let authorityData = {
+      role: '',
+      customRole: '',
+      name: '',
+      staffId: '',
+      email: '',
+      phone: '',
+      floor: '',
+      department: '',
+      designation: ''
+    };
+
+    // All complaints data (real-time simulation)
+    let complaints = [
+      {
+        id: 'CMP-001',
+        student: 'Rahul Sharma',
+        rollNo: '2101010101',
+        contact: '9876543210',
+        category: 'Hostel (Wi-Fi)',
+        location: 'Hostel 6, Floor 3, Room 204',
+        priority: 'high',
+        status: 'open',
+        created: new Date(Date.now() - 30*60*1000).toISOString(),
+        slaDeadline: new Date(Date.now() + 2*60*60*1000).toISOString(),
+        description: 'Wi-Fi not working in room 204 for the past 2 days. Multiple attempts to reconnect failed.',
+        attachments: ['wifi_issue.jpg'],
+        forwardChain: [],
+        timeline: [
+          { time: new Date(Date.now() - 30*60*1000).toISOString(), action: 'Submitted by Student', note: 'Complaint registered' }
+        ],
+        notes: []
+      },
+      {
+        id: 'CMP-002',
+        student: 'Priya Patel',
+        rollNo: '2102020202',
+        contact: '9876543211',
+        category: 'Hostel (Water)',
+        location: 'Hostel 3, Floor 2, Room 101',
+        priority: 'medium',
+        status: 'open',
+        created: new Date(Date.now() - 2*60*60*1000).toISOString(),
+        slaDeadline: new Date(Date.now() + 4*60*60*1000).toISOString(),
+        description: 'No water supply in bathroom since morning',
+        attachments: [],
+        forwardChain: [],
+        timeline: [
+          { time: new Date(Date.now() - 2*60*60*1000).toISOString(), action: 'Submitted by Student', note: 'Complaint registered' }
+        ],
+        notes: []
+      }
+    ];
+
+    // Forward history tracking
+    let forwardHistory = [];
+
+    // Current complaint being viewed
+    let currentComplaint = null;
+
+    let currentStep = 1;
+    const totalSteps = 7;
+
+    // Simulate real-time complaints (every 30 seconds)
+    setInterval(() => {
+      const newComplaint = {
+        id: 'CMP-' + String(complaints.length + 1).padStart(3, '0'),
+        student: ['Amit Kumar', 'Neha Singh', 'Raj Patel', 'Sneha Sharma'][Math.floor(Math.random() * 4)],
+        rollNo: '210' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0'),
+        contact: '98765' + Math.floor(Math.random() * 100000).toString().padStart(5, '0'),
+        category: ['Hostel (Wi-Fi)', 'Hostel (Water)', 'Academic', 'Maintenance'][Math.floor(Math.random() * 4)],
+        location: ['Hostel 6', 'Hostel 3', 'Block A', 'Library'][Math.floor(Math.random() * 4)] + ' - ' + ['Floor 1', 'Floor 2', 'Floor 3'][Math.floor(Math.random() * 3)],
+        priority: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)],
+        status: 'open',
+        created: new Date().toISOString(),
+        slaDeadline: new Date(Date.now() + 4*60*60*1000).toISOString(),
+        description: 'New complaint received in real-time',
+        attachments: [],
+        forwardChain: [],
+        timeline: [
+          { time: new Date().toISOString(), action: 'Submitted by Student', note: 'Complaint registered' }
+        ],
+        notes: []
+      };
+      
+      complaints.unshift(newComplaint);
+      
+      // Show live notification
+      document.getElementById('notificationMessage').textContent = `New complaint #${newComplaint.id} received!`;
+      document.getElementById('liveNotification').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('liveNotification').style.display = 'none';
+      }, 5000);
+      
+      refreshData();
+    }, 30000); // Every 30 seconds
+
+    // Onboarding functions
+    function startOnboarding() {
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('modalOverlay').classList.add('active');
+      currentStep = 1;
+      updateModal();
+    }
+
+    function updateModal() {
+      updateProgress();
+      updateModalContent();
+      updateNavigation();
+    }
+
+    function updateProgress() {
+      const progress = (currentStep / totalSteps) * 100;
+      document.getElementById('progressBar').style.width = progress + '%';
+    }
+
+    function updateModalContent() {
+      const contentDiv = document.getElementById('modalContent');
+      const titleEl = document.getElementById('modalTitle');
+      const subtitleEl = document.getElementById('modalSubtitle');
+      const iconEl = document.getElementById('modalIcon');
+
+      switch(currentStep) {
+        case 1:
+          titleEl.innerText = 'Choose Your Authority Type';
+          subtitleEl.innerText = 'Step 1 of 7 · Select your position';
+          iconEl.innerHTML = '<i class="fas fa-user-tag"></i>';
+          contentDiv.innerHTML = `
+            <div class="option-buttons">
+              <button class="option-btn ${authorityData.role === 'warden' ? 'selected' : ''}" onclick="setRole('warden')">
+                <i class="fas fa-building"></i> Warden
+              </button>
+              <button class="option-btn ${authorityData.role === 'cr' ? 'selected' : ''}" onclick="setRole('cr')">
+                <i class="fas fa-users"></i> CR
+              </button>
+              <button class="option-btn ${authorityData.role === 'teaching' ? 'selected' : ''}" onclick="setRole('teaching')">
+                <i class="fas fa-chalkboard-teacher"></i> Teaching Staff
+              </button>
+              <button class="option-btn ${authorityData.role === 'fr' ? 'selected' : ''}" onclick="setRole('fr')">
+                <i class="fas fa-user-friends"></i> FR
+              </button>
+              <button class="option-btn ${authorityData.role === 'hod' ? 'selected' : ''}" onclick="setRole('hod')">
+                <i class="fas fa-user-graduate"></i> HOD
+              </button>
+              <button class="option-btn ${authorityData.role === 'dean' ? 'selected' : ''}" onclick="setRole('dean')">
+                <i class="fas fa-user-tie"></i> Dean
+              </button>
+              <button class="option-btn ${authorityData.role === 'other' ? 'selected' : ''}" onclick="setRole('other')">
+                <i class="fas fa-user-cog"></i> Other
+              </button>
+            </div>
+            ${authorityData.role === 'other' ? `
+              <div style="margin-top:1rem;">
+                <input type="text" id="customRole" placeholder="Enter your post/designation" style="width:100%; padding:1rem; border-radius:30px; border:2px solid #2f4a3a; background:#0e1d15; color:white;">
+              </div>
+            ` : ''}
+          `;
+          break;
+
+        case 2:
+          titleEl.innerText = 'Personal Information';
+          subtitleEl.innerText = 'Step 2 of 7 · Tell us about yourself';
+          iconEl.innerHTML = '<i class="fas fa-user"></i>';
+          contentDiv.innerHTML = `
+            <div class="modal-form">
+              <div class="form-group">
+                <label><i class="fas fa-user"></i> Full Name *</label>
+                <input type="text" id="authName" placeholder="Enter your full name" value="${authorityData.name || ''}">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-id-card"></i> Staff ID *</label>
+                <input type="text" id="authStaffId" placeholder="e.g., PU/STAFF/123" value="${authorityData.staffId || ''}">
+              </div>
+            </div>
+          `;
+          break;
+
+        case 3:
+          titleEl.innerText = 'Contact Details';
+          subtitleEl.innerText = 'Step 3 of 7 · How can we reach you?';
+          iconEl.innerHTML = '<i class="fas fa-envelope"></i>';
+          contentDiv.innerHTML = `
+            <div class="modal-form">
+              <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Official Email *</label>
+                <input type="email" id="authEmail" placeholder="e.g., name@paruluniversity.ac.in" value="${authorityData.email || ''}">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-phone"></i> Phone Number *</label>
+                <input type="tel" id="authPhone" placeholder="e.g., 9876543210" value="${authorityData.phone || ''}">
+              </div>
+            </div>
+          `;
+          break;
+
+        case 4:
+          titleEl.innerText = 'Department Details';
+          subtitleEl.innerText = 'Step 4 of 7 · Your department information';
+          iconEl.innerHTML = '<i class="fas fa-building"></i>';
+          contentDiv.innerHTML = `
+            <div class="modal-form">
+              <div class="form-group">
+                <label><i class="fas fa-building"></i> Department *</label>
+                <input type="text" id="authDepartment" placeholder="e.g., Computer Engineering" value="${authorityData.department || ''}">
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-briefcase"></i> Designation *</label>
+                <input type="text" id="authDesignation" placeholder="e.g., Professor" value="${authorityData.designation || ''}">
+              </div>
+            </div>
+          `;
+          break;
+
+        case 5:
+          titleEl.innerText = 'Floor/Wing Details';
+          subtitleEl.innerText = 'Step 5 of 7 · For wardens (optional for others)';
+          iconEl.innerHTML = '<i class="fas fa-layer-group"></i>';
+          contentDiv.innerHTML = `
+            <div class="modal-form">
+              <div class="form-group">
+                <label><i class="fas fa-layer-group"></i> Floor/Wing (if applicable)</label>
+                <select id="authFloor">
+                  <option value="">Not applicable</option>
+                  <option value="Ground" ${authorityData.floor === 'Ground' ? 'selected' : ''}>Ground Floor</option>
+                  <option value="1" ${authorityData.floor === '1' ? 'selected' : ''}>1st Floor</option>
+                  <option value="2" ${authorityData.floor === '2' ? 'selected' : ''}>2nd Floor</option>
+                  <option value="3" ${authorityData.floor === '3' ? 'selected' : ''}>3rd Floor</option>
+                  <option value="4" ${authorityData.floor === '4' ? 'selected' : ''}>4th Floor</option>
+                  <option value="5" ${authorityData.floor === '5' ? 'selected' : ''}>5th Floor</option>
+                  <option value="All" ${authorityData.floor === 'All' ? 'selected' : ''}>All Floors</option>
+                </select>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 6:
+          titleEl.innerText = 'Hierarchy Level';
+          subtitleEl.innerText = 'Step 6 of 7 · Who can forward to you?';
+          iconEl.innerHTML = '<i class="fas fa-sitemap"></i>';
+          contentDiv.innerHTML = `
+            <div class="modal-form">
+              <div class="form-group">
+                <label><i class="fas fa-arrow-up"></i> Reports To (Higher Authority)</label>
+                <select id="authReportsTo">
+                  <option value="">None (Top Level)</option>
+                  <option value="HOD">HOD</option>
+                  <option value="Dean">Dean</option>
+                  <option value="Director">Director</option>
+                  <option value="Registrar">Registrar</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label><i class="fas fa-arrow-down"></i> Can Receive Forwards From</label>
+                <select id="authReceivesFrom" multiple size="4" style="height:auto;">
+                  <option value="warden">Warden</option>
+                  <option value="cr">CR</option>
+                  <option value="teaching">Teaching Staff</option>
+                  <option value="fr">FR</option>
+                  <option value="hod">HOD</option>
+                </select>
+                <small style="color:#c0d9cc;">Hold Ctrl/Cmd to select multiple</small>
+              </div>
+            </div>
+          `;
+          break;
+
+        case 7:
+          titleEl.innerText = 'Review Your Information';
+          subtitleEl.innerText = 'Step 7 of 7 · Please verify your details';
+          iconEl.innerHTML = '<i class="fas fa-check-circle"></i>';
+          
+          let summaryHTML = '<div class="summary-card">';
+          summaryHTML += `<div class="summary-item"><span class="summary-label">Role:</span><span class="summary-value">${authorityData.role} ${authorityData.customRole ? '(' + authorityData.customRole + ')' : ''}</span></div>`;
+          summaryHTML += `<div class="summary-item"><span class="summary-label">Name:</span><span class="summary-value">${authorityData.name || 'Not provided'}</span></div>`;
+          summaryHTML += `<div class="summary-item"><span class="summary-label">Staff ID:</span><span class="summary-value">${authorityData.staffId || 'Not provided'}</span></div>`;
+          summaryHTML += `<div class="summary-item"><span class="summary-label">Email:</span><span class="summary-value">${authorityData.email || 'Not provided'}</span></div>`;
+          summaryHTML += `<div class="summary-item"><span class="summary-label">Phone:</span><span class="summary-value">${authorityData.phone || 'Not provided'}</span></div>`;
+          summaryHTML += `<div class="summary-item"><span class="summary-label">Department:</span><span class="summary-value">${authorityData.department || 'Not provided'}</span></div>`;
+          summaryHTML += `<div class="summary-item"><span class="summary-label">Floor/Wing:</span><span class="summary-value">${authorityData.floor || 'Not applicable'}</span></div>`;
+          summaryHTML += '</div>';
+          summaryHTML += '<p style="color:#c0d9cc; text-align:center;">Click Finish to see your personalized dashboard</p>';
+          
+          contentDiv.innerHTML = summaryHTML;
+          break;
+      }
+    }
+
+    function updateNavigation() {
+      document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
+      document.getElementById('nextBtn').innerHTML = currentStep === totalSteps ? 
+        'Finish <i class="fas fa-check"></i>' : 'Next <i class="fas fa-arrow-right"></i>';
+    }
+
+    function setRole(role) {
+      authorityData.role = role;
+      if (role !== 'other') {
+        authorityData.customRole = '';
+      }
+      updateModalContent();
+    }
+
+    function saveCurrentStep() {
+      switch(currentStep) {
+        case 1:
+          if (authorityData.role === 'other') {
+            authorityData.customRole = document.getElementById('customRole')?.value || '';
+          }
+          break;
+        case 2:
+          authorityData.name = document.getElementById('authName')?.value || '';
+          authorityData.staffId = document.getElementById('authStaffId')?.value || '';
+          break;
+        case 3:
+          authorityData.email = document.getElementById('authEmail')?.value || '';
+          authorityData.phone = document.getElementById('authPhone')?.value || '';
+          break;
+        case 4:
+          authorityData.department = document.getElementById('authDepartment')?.value || '';
+          authorityData.designation = document.getElementById('authDesignation')?.value || '';
+          break;
+        case 5:
+          authorityData.floor = document.getElementById('authFloor')?.value || '';
+          break;
+        case 6:
+          // Hierarchy settings would be saved here
+          break;
+      }
+    }
+
+    function nextStep() {
+      if (currentStep === 1 && !authorityData.role) {
+        alert('Please select a role');
+        return;
+      }
+      
+      if (currentStep === 2) {
+        const name = document.getElementById('authName')?.value;
+        const staffId = document.getElementById('authStaffId')?.value;
+        if (!name || !staffId) {
+          alert('Please fill in all required fields');
+          return;
+        }
+      }
+      
+      if (currentStep === 3) {
+        const email = document.getElementById('authEmail')?.value;
+        const phone = document.getElementById('authPhone')?.value;
+        if (!email || !phone) {
+          alert('Please fill in all required fields');
+          return;
+        }
+      }
+      
+      if (currentStep === 4) {
+        const dept = document.getElementById('authDepartment')?.value;
+        if (!dept) {
+          alert('Please fill in department');
+          return;
+        }
+      }
+      
+      saveCurrentStep();
+
+      if (currentStep === totalSteps) {
+        showThankYou();
+      } else {
+        currentStep++;
+        updateModal();
+      }
+    }
+
+    function prevStep() {
+      saveCurrentStep();
+      currentStep--;
+      updateModal();
+    }
+
+    function showThankYou() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      
+      const thankYouOverlay = document.createElement('div');
+      thankYouOverlay.className = 'modal-overlay active';
+      thankYouOverlay.id = 'thankYouOverlay';
+      thankYouOverlay.innerHTML = `
+        <div class="modal-container" style="text-align:center;">
+          <div class="thankyou-screen">
+            <div class="thankyou-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Thank You, ${authorityData.name}!</h2>
+            <p>Your profile has been set up successfully.</p>
+            <div class="summary-card" style="margin:2rem 0;">
+              <div class="summary-item">
+                <span class="summary-label">Staff ID:</span>
+                <span class="summary-value">${authorityData.staffId}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Role:</span>
+                <span class="summary-value">${authorityData.role} ${authorityData.customRole ? '(' + authorityData.customRole + ')' : ''}</span>
+              </div>
+            </div>
+            <button class="dashboard-btn" onclick="showDashboard()">
+              <i class="fas fa-arrow-right"></i> Go to Dashboard
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(thankYouOverlay);
+    }
+
+    function showDashboard() {
+      document.getElementById('thankYouOverlay')?.remove();
+      document.getElementById('welcomeScreen').style.display = 'none';
+      document.getElementById('dashboardContainer').style.display = 'flex';
+      updateDashboard();
+    }
+
+    function updateDashboard() {
+      const roleDisplay = authorityData.role === 'other' ? authorityData.customRole : authorityData.role;
+      
+      document.getElementById('authorityDetails').innerHTML = `
+        <h3>${authorityData.name || 'Authority'}</h3>
+        <p><i class="fas fa-id-card"></i> ${authorityData.staffId || 'N/A'} · <i class="fas fa-building"></i> ${authorityData.department || 'N/A'} ${authorityData.floor ? '· Floor ' + authorityData.floor : ''}</p>
+      `;
+
+      document.getElementById('roleTag').textContent = roleDisplay.toUpperCase();
+      document.getElementById('roleBadge').innerHTML = `<i class="fas fa-user-tie"></i> ${roleDisplay} · ${authorityData.department || 'Department'}`;
+
+      refreshData();
+    }
+
+    function refreshData() {
+      // Filter complaints based on role and floor
+      let filteredComplaints = complaints;
+      
+      if (authorityData.role === 'warden' && authorityData.floor && authorityData.floor !== 'All' && authorityData.floor !== '') {
+        filteredComplaints = complaints.filter(c => 
+          c.location.includes(`Floor ${authorityData.floor}`) || c.location.includes('All')
+        );
+      } else if (authorityData.role === 'warden') {
+        filteredComplaints = complaints.filter(c => c.category.includes('Hostel'));
+      } else if (authorityData.role === 'hod') {
+        filteredComplaints = complaints.filter(c => c.category.includes('Academic'));
+      } else if (authorityData.role === 'teaching') {
+        filteredComplaints = complaints.filter(c => c.category.includes('Academic') || c.category.includes('Classroom'));
+      }
+      
+      // Update counts
+      const openCount = filteredComplaints.filter(c => c.status === 'open' || c.status === 'progress').length;
+      const progressCount = filteredComplaints.filter(c => c.status === 'progress').length;
+      const forwardedToMe = filteredComplaints.filter(c => 
+        c.forwardChain && c.forwardChain[c.forwardChain.length - 1]?.to === authorityData.staffId
+      ).length;
+      const escalatedCount = filteredComplaints.filter(c => c.status === 'escalated').length;
+      
+      document.getElementById('openComplaints').textContent = openCount;
+      document.getElementById('openCount').textContent = openCount;
+      document.getElementById('inProgressCount').textContent = progressCount;
+      document.getElementById('forwardedToMe').textContent = forwardedToMe;
+      document.getElementById('forwardedCount').textContent = forwardedToMe;
+      document.getElementById('escalatedCount').textContent = escalatedCount;
+      document.getElementById('escalatedCount2').textContent = escalatedCount;
+      
+      // Populate tables
+      populateComplaintsTable(filteredComplaints);
+      populateForwardedTable();
+      populateEscalatedTable();
+      populateForwardHistory();
+    }
+
+    function populateComplaintsTable(complaintsList) {
+      const tbody = document.getElementById('complaintsTableBody');
+      let html = '';
+      
+      complaintsList.forEach(complaint => {
+        const priorityClass = complaint.priority === 'high' ? 'priority-high' : 
+                            complaint.priority === 'medium' ? 'priority-medium' : 'priority-low';
+        const statusClass = complaint.status === 'open' ? 'status-open' :
+                           complaint.status === 'progress' ? 'status-progress' :
+                           complaint.status === 'resolved' ? 'status-resolved' : 'status-escalated';
+        
+        const deadline = new Date(complaint.slaDeadline);
+        const now = new Date();
+        const hoursLeft = Math.round((deadline - now) / (1000 * 60 * 60));
+        const slaClass = hoursLeft < 2 ? 'sla-warning' : 'sla-normal';
+        const slaText = hoursLeft < 0 ? 'Overdue' : `${hoursLeft}h left`;
+        
+        // Build forward chain display
+        let forwardChainHtml = '';
+        if (complaint.forwardChain && complaint.forwardChain.length > 0) {
+          forwardChainHtml = complaint.forwardChain.map(f => 
+            `<i class="fas fa-arrow-right"></i> ${f.fromRole} → ${f.toRole}`
+          ).join(' ');
+        } else {
+          forwardChainHtml = '<span style="color:#999;">Direct</span>';
+        }
+        
+        html += `
+          <tr>
+            <td><strong>${complaint.id}</strong></td>
+            <td>${complaint.student}</td>
+            <td>${complaint.category}</td>
+            <td>${complaint.location}</td>
+            <td><span class="priority-badge ${priorityClass}">${complaint.priority}</span></td>
+            <td><span class="status-badge ${statusClass}">${complaint.status}</span></td>
+            <td class="forward-chain">${forwardChainHtml}</td>
+            <td><span class="${slaClass}">${slaText}</span></td>
+            <td>
+              <button class="action-btn" onclick="viewComplaint('${complaint.id}')"><i class="fas fa-eye"></i></button>
+              <button class="action-btn" onclick="updateStatusDirect('${complaint.id}', 'progress')"><i class="fas fa-play"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+      
+      tbody.innerHTML = html || '<tr><td colspan="9" style="text-align:center; padding:2rem;">No complaints found</td></tr>';
+    }
+
+    function populateForwardedTable() {
+      const tbody = document.getElementById('forwardedTableBody');
+      const forwarded = complaints.filter(c => 
+        c.forwardChain && c.forwardChain[c.forwardChain.length - 1]?.to === authorityData.staffId
+      );
+      
+      let html = '';
+      forwarded.forEach(complaint => {
+        const lastForward = complaint.forwardChain[complaint.forwardChain.length - 1];
+        html += `
+          <tr>
+            <td><strong>${complaint.id}</strong></td>
+            <td>${complaint.student}</td>
+            <td>${lastForward.fromName}</td>
+            <td>${lastForward.fromRole}</td>
+            <td>${lastForward.reason}</td>
+            <td>${new Date(lastForward.time).toLocaleString()}</td>
+            <td>
+              <button class="action-btn" onclick="viewComplaint('${complaint.id}')"><i class="fas fa-eye"></i></button>
+              <button class="action-btn" onclick="updateStatusDirect('${complaint.id}', 'progress')"><i class="fas fa-play"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+      
+      tbody.innerHTML = html || '<tr><td colspan="7" style="text-align:center; padding:2rem;">No forwarded complaints</td></tr>';
+    }
+
+    function populateEscalatedTable() {
+      const tbody = document.getElementById('escalatedTableBody');
+      const escalated = complaints.filter(c => c.status === 'escalated');
+      
+      let html = '';
+      escalated.forEach(complaint => {
+        html += `
+          <tr>
+            <td><strong>${complaint.id}</strong></td>
+            <td>${complaint.student}</td>
+            <td>${complaint.forwardChain?.[0]?.fromName || 'System'}</td>
+            <td>Higher Authority</td>
+            <td>SLA breach or unresolved</td>
+            <td><span class="status-badge status-escalated">Escalated</span></td>
+            <td>
+              <button class="action-btn" onclick="viewComplaint('${complaint.id}')"><i class="fas fa-eye"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+      
+      tbody.innerHTML = html || '<tr><td colspan="7" style="text-align:center; padding:2rem;">No escalated complaints</td></tr>';
+    }
+
+    function populateForwardHistory() {
+      const historyDiv = document.getElementById('forwardHistory');
+      
+      let html = '';
+      forwardHistory.forEach(item => {
+        html += `
+          <div class="timeline-item">
+            <div class="timeline-time">${new Date(item.time).toLocaleString()}</div>
+            <div class="timeline-content">
+              <h4>Complaint #${item.complaintId} forwarded</h4>
+              <p><i class="fas fa-user"></i> ${item.fromName} (${item.fromRole}) → ${item.toName} (${item.toRole})</p>
+              <p><strong>Reason:</strong> ${item.reason}</p>
+            </div>
+          </div>
+        `;
+      });
+      
+      historyDiv.innerHTML = html || '<p style="text-align:center; padding:2rem; color:#666;">No forward history yet</p>';
+    }
+
+    function viewComplaint(id) {
+      currentComplaint = complaints.find(c => c.id === id);
+      if (!currentComplaint) return;
+      
+      // Populate modal
+      document.getElementById('modalComplaintId').textContent = currentComplaint.id;
+      document.getElementById('modalStudentName').textContent = currentComplaint.student;
+      document.getElementById('modalStudentRoll').textContent = currentComplaint.rollNo;
+      document.getElementById('modalLocation').textContent = currentComplaint.location;
+      document.getElementById('modalContact').textContent = currentComplaint.contact;
+      document.getElementById('modalCategory').textContent = currentComplaint.category;
+      document.getElementById('modalPriority').textContent = currentComplaint.priority;
+      document.getElementById('modalStatus').textContent = currentComplaint.status;
+      document.getElementById('modalCreated').textContent = new Date(currentComplaint.created).toLocaleString();
+      document.getElementById('modalDescription').textContent = currentComplaint.description;
+      
+      // Calculate SLA
+      const deadline = new Date(currentComplaint.slaDeadline);
+      const now = new Date();
+      const hoursLeft = Math.round((deadline - now) / (1000 * 60 * 60));
+      const slaText = hoursLeft < 0 ? 'Overdue' : `${hoursLeft}h remaining`;
+      document.getElementById('modalSlaTimer').textContent = `SLA: ${slaText}`;
+      
+      // Populate forward chain
+      const forwardChainDiv = document.getElementById('forwardChain');
+      if (currentComplaint.forwardChain && currentComplaint.forwardChain.length > 0) {
+        let chainHtml = '';
+        currentComplaint.forwardChain.forEach((f, index) => {
+          chainHtml += `
+            <div class="forward-item">
+              <i class="fas fa-arrow-right"></i>
+              <span>${index + 1}. ${f.fromName} (${f.fromRole}) → ${f.toName} (${f.toRole})</span>
+              <small style="color:#666;">${new Date(f.time).toLocaleString()}</small>
+              <p style="margin-left:2rem; color:#666;">Reason: ${f.reason}</p>
+            </div>
+          `;
+        });
+        forwardChainDiv.innerHTML = chainHtml;
+      } else {
+        forwardChainDiv.innerHTML = '<p style="color:#666;">Direct complaint (not forwarded)</p>';
+      }
+      
+      // Populate timeline
+      const timeline = document.getElementById('modalTimeline');
+      let timelineHtml = '<h3 style="margin-bottom:1rem;"><i class="fas fa-history"></i> Status Timeline</h3>';
+      currentComplaint.timeline.forEach(item => {
+        timelineHtml += `
+          <div class="timeline-item">
+            <div class="timeline-time">${new Date(item.time).toLocaleString()}</div>
+            <div class="timeline-content">
+              <h4>${item.action}</h4>
+              <p>${item.note}</p>
+            </div>
+          </div>
+        `;
+      });
+      timeline.innerHTML = timelineHtml;
+      
+      // Populate notes
+      const notesList = document.getElementById('notesList');
+      let notesHtml = '';
+      currentComplaint.notes.forEach(note => {
+        notesHtml += `
+          <div class="note-item">
+            <div class="note-header">
+              <span class="note-author">${note.author}</span>
+              <span>${note.time}</span>
+            </div>
+            <p>${note.text}</p>
+          </div>
+        `;
+      });
+      notesList.innerHTML = notesHtml || '<p style="color:#666;">No internal notes yet</p>';
+      
+      document.getElementById('complaintModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('complaintModal').classList.remove('active');
+    }
+
+    function updateStatus(status) {
+      if (!currentComplaint) return;
+      
+      currentComplaint.status = status;
+      currentComplaint.timeline.push({
+        time: new Date().toISOString(),
+        action: `Status changed to ${status}`,
+        note: `By ${authorityData.name} (${authorityData.role})`
+      });
+      
+      refreshData();
+      closeModal();
+      alert(`Complaint marked as ${status}`);
+    }
+
+    function updateStatusDirect(id, status) {
+      const complaint = complaints.find(c => c.id === id);
+      if (complaint) {
+        complaint.status = status;
+        complaint.timeline.push({
+          time: new Date().toISOString(),
+          action: `Status changed to ${status}`,
+          note: `By ${authorityData.name} (${authorityData.role})`
+        });
+        refreshData();
+        alert(`Complaint marked as ${status}`);
+      }
+    }
+
+    function showForwardModal() {
+      const higherAuthorities = ['HOD', 'Dean', 'Director', 'Registrar'];
+      let options = '';
+      higherAuthorities.forEach(auth => {
+        options += `<option value="${auth}">${auth}</option>`;
+      });
+      
+      const to = prompt('Forward to which authority? (HOD/Dean/Director/Registrar)');
+      if (!to) return;
+      
+      const reason = prompt('Reason for forwarding:');
+      if (!reason) return;
+      
+      if (currentComplaint) {
+        const forwardRecord = {
+          fromName: authorityData.name,
+          fromRole: authorityData.role,
+          fromId: authorityData.staffId,
+          toName: to,
+          toRole: to,
+          toId: to,
+          reason: reason,
+          time: new Date().toISOString(),
+          complaintId: currentComplaint.id
+        };
+        
+        currentComplaint.forwardChain.push(forwardRecord);
+        forwardHistory.push(forwardRecord);
+        
+        currentComplaint.timeline.push({
+          time: new Date().toISOString(),
+          action: `Forwarded to ${to}`,
+          note: `Reason: ${reason}`
+        });
+        
+        currentComplaint.status = 'progress';
+        
+        refreshData();
+        closeModal();
+        alert('Complaint forwarded successfully');
+      }
+    }
+
+    function showResolveModal() {
+      const resolution = prompt('Enter resolution notes:');
+      if (resolution) {
+        if (currentComplaint) {
+          currentComplaint.status = 'resolved';
+          currentComplaint.timeline.push({
+            time: new Date().toISOString(),
+            action: 'Resolved',
+            note: resolution
+          });
+          refreshData();
+          closeModal();
+          alert('Complaint resolved successfully');
+        }
+      }
+    }
+
+    function showCancelModal() {
+      const justification = prompt('Cancellation justification (required):');
+      if (justification) {
+        if (currentComplaint) {
+          currentComplaint.status = 'cancelled';
+          currentComplaint.timeline.push({
+            time: new Date().toISOString(),
+            action: 'Cancelled',
+            note: justification
+          });
+          refreshData();
+          closeModal();
+          alert('Complaint cancelled');
+        }
+      }
+    }
+
+    function addNote() {
+      const note = document.getElementById('newNote').value;
+      if (note && currentComplaint) {
+        currentComplaint.notes.push({
+          author: `${authorityData.name} (${authorityData.role})`,
+          time: new Date().toLocaleString(),
+          text: note
+        });
+        document.getElementById('newNote').value = '';
+        viewComplaint(currentComplaint.id);
+      }
+    }
+
+    function showSection(section, element) {
+      document.getElementById('dashboardSection').style.display = 'none';
+      document.getElementById('forwardedSection').style.display = 'none';
+      document.getElementById('escalatedSection').style.display = 'none';
+      document.getElementById('auditSection').style.display = 'none';
+      document.getElementById('reportsSection').style.display = 'none';
+      
+      if (section === 'dashboard' || section === 'complaints') {
+        document.getElementById('dashboardSection').style.display = 'block';
+      } else if (section === 'forwarded') {
+        document.getElementById('forwardedSection').style.display = 'block';
+      } else if (section === 'escalated') {
+        document.getElementById('escalatedSection').style.display = 'block';
+      } else if (section === 'audit') {
+        document.getElementById('auditSection').style.display = 'block';
+      } else if (section === 'reports') {
+        document.getElementById('reportsSection').style.display = 'block';
+      }
+      
+      document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+      if (element) element.classList.add('active');
+    }
+
+    function exportReport(type) {
+      alert(`Exporting ${type.toUpperCase()} report...\nThis would download a file with all complaint and forward data.`);
+    }
+
+    function logout() {
+      authorityData = {
+        role: '', customRole: '', name: '', staffId: '', email: '', phone: '', floor: '', department: '', designation: ''
+      };
+      document.getElementById('dashboardContainer').style.display = 'none';
+      document.getElementById('welcomeScreen').style.display = 'flex';
+      currentStep = 1;
+    }
+
+    // Filter listeners
+    ['statusFilter', 'categoryFilter', 'priorityFilter'].forEach(id => {
+      document.getElementById(id)?.addEventListener('change', refreshData);
+    });
+
+    document.getElementById('searchInput')?.addEventListener('input', function(e) {
+      // Search functionality would go here
+    });
+
+    // Escape key to close modal
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+        if (document.getElementById('modalOverlay').classList.contains('active')) {
+          if (confirm('Are you sure you want to exit? Your progress will be lost.')) {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.getElementById('welcomeScreen').style.display = 'flex';
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
